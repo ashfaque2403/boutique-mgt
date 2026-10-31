@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h2>Update Status for Order ID: {{ order.id }}</h2>
+    {% include "messages.html" %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="status" class="form-label">Order Status</label>
+            <select name="status" class="form-select" id="status">
+                {% for status_code, status_label in status_choices %}
+                    <option value="{{ status_code }}" {% if order.status == status_code %}selected{% endif %}>
+                        {{ status_label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Status</button>
+    </form>
+</div>
+{% endblock %}

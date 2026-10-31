@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card p-4 shadow-lg">
+        <h2 class="text-center mb-4">Approve Customization</h2>
+        {% include "messages.html" %}
+
+        <!-- Product and User -->
+        <p><strong>Product:</strong> {{ customization.product.name }}</p>
+        <p><strong>User:</strong> {{ customization.user.username }}</p>
+
+        <!-- Customization Details -->
+        <h4>Customization Details</h4>
+        <hr>
+        <p><strong>Custom Text:</strong> {{ customization.custom_text|default:"N/A" }}</p>
+        <p><strong>Embroidery Pattern:</strong> {{ customization.embroidery_pattern|default:"N/A" }}</p>
+        <p><strong>Color:</strong> {{ customization.color|capfirst }}</p>
+        {% if customization.color == 'custom' %}
+            <p><strong>Custom Color:</strong> {{ customization.custom_color }}</p>
+        {% endif %}
+        <p><strong>Shoulder Width:</strong> {{ customization.shoulder_width }} cm</p>
+        <p><strong>Sleeve Type:</strong> {{ customization.sleeve_type|capfirst }}</p>
+        <p><strong>Sleeve Length:</strong> {{ customization.sleeve_length }} cm</p>
+        <p><strong>Waist Width:</strong> {{ customization.waist_width }} cm</p>
+        <p><strong>Length:</strong> {{ customization.length }} cm</p>
+
+        <!-- Image Preview -->
+        {% if customization.image %}
+        <p><strong>Uploaded Image:</strong></p>
+        <img src="{{ customization.image.url }}" alt="Customization Image" class="img-fluid mb-3" style="max-width: 300px;">
+        {% endif %}
+
+        <!-- Price Approval Form -->
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="customization_price" class="form-label">Set Customization Price:</label>
+                <input type="number" name="customization_price" value="{{ customization.customization_price }}" class="form-control">
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success btn-lg">Approve</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    {% include "messages.html" %}
+
+    <div class="card p-4">
+        <h2 class="text-center mb-4">Add New Product</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <h4>Product Details</h4>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label>
+                <input type="text" name="name" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label>
+                <textarea name="description" class="form-control" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="price" class="form-label">Price:</label>
+                <input type="number" name="price" class="form-control" step="0.01" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="category" class="form-label">Category:</label>
+                <select name="category" class="form-control">
+                    <option value="">Select Category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+         
+
+            <div class="mb-3">
+                <label for="fabric" class="form-label">Fabric:</label>
+                <select name="fabric" class="form-control">
+                    <option value="">Select Fabric</option>
+                    {% for fabric in fabrics %}
+                        <option value="{{ fabric.id }}">{{ fabric.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Select Colors:</label>
+                <div class="d-flex flex-wrap">
+                    {% for color in colors %}
+                        <div class="form-check me-3">
+                            <input type="checkbox" name="colors" value="{{ color.id }}" class="form-check-input">
+                            <label class="form-check-label">{{ color.name }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Select Sizes:</label>
+                <div class="d-flex flex-wrap">
+                    {% for size in sizes %}
+                        <div class="form-check me-3">
+                            <input type="checkbox" name="sizes" value="{{ size.id }}" class="form-check-input">
+                            <label class="form-check-label">{{ size.name }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="discount" class="form-label">Discount:</label>
+                <input type="number" name="discount" class="form-control" min="0">
+            </div>
+
+            <div class="mb-3">
+                <label for="stock_quantity" class="form-label">Stock Quantity:</label>
+                <input type="number" name="stock_quantity" class="form-control" min="0" required>
+            </div>
+
+            <h4>Upload Product Images</h4>
+            <div class="mb-3">
+                <input type="file" name="images" class="form-control" multiple required>
+            </div>
+
+            <button type="submit" class="primary-btn mt-3">Add Product</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

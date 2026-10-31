@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Profile container styling */
+    .profile-container {
+        background-color: #f4f5f7;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    a {
+        color:black;
+    }
+
+    /* Profile header section */
+    .profile-header {
+        background-color: #D10024;
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        text-align: center;
+    }
+
+    .profile-header h1 {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .profile-header span {
+        font-weight: lighter;
+    }
+
+    /* Sidebar styling */
+    .sidebar-menu {
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar-menu .list-group-item {
+        border: none;
+        padding: 12px 20px;
+        font-weight: bold;
+        color: #333;
+        transition: 0.3s;
+    }
+
+    .sidebar-menu .list-group-item:hover {
+        background-color: black;
+        color: white;
+    }
+
+    /* Sidebar icons */
+    .sidebar-menu .list-group-item i {
+        margin-right: 10px;
+        font-size: 1.2rem;
+    }
+
+    /* Profile card styling */
+    .card-custom {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+     
+    }
+
+    /* Input field styling */
+    .input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        font-weight: normal;
+        margin-bottom: 15px;
+    }
+
+    .btn-warning {
+        background-color: #D10024;
+        border-color: #D10024;
+        color: white;
+    }
+
+    .btn-warning:hover {
+        background-color: #C10020;
+        border-color: #C10020;
+    }
+
+    /* Responsive layout */
+    @media (max-width: 768px) {
+        .profile-container {
+            padding: 15px;
+        }
+
+        .sidebar-menu {
+            padding: 15px;
+        }
+
+        .card-custom {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="container  profile-container">
+    
+
+    <div class="row mt-4">
+        {% include "messages.html" %}
+
+        <!-- Sidebar Menu -->
+        <div class="col-md-3">
+            <div class="sidebar-menu">
+                <ul class="list-group">
+                    {% if request.user.is_superuser %}
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-bell"></i> {% endcomment %}
+                        <a href="{% url 'view_complaints' %}" class="text-decoration-none">View Complaints</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-plus-circle"></i> {% endcomment %}
+                        <a href="{% url 'add_product' %}" class="text-decoration-none">Add Product</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-cogs"></i> {% endcomment %}
+                        <a href="{% url 'add_category' %}" class="text-decoration-none">Add Categories</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-cogs"></i> {% endcomment %}
+                        <a href="{% url 'add_fabric' %}" class="text-decoration-none">Add Fabric</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-cogs"></i> {% endcomment %}
+                        <a href="{% url 'add_color' %}" class="text-decoration-none">Add Colors</a>
+                    </li>
+                    
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-list"></i> {% endcomment %}
+                        <a href="{% url 'product-list' %}" class="text-decoration-none">Products</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-box"></i> {% endcomment %}
+                        <a href="{% url 'order' %}" class="text-decoration-none">Orders</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-truck"></i> {% endcomment %}
+                        <a href="{% url 'corder' %}" class="text-decoration-none">Customized Orders</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-user-plus"></i> {% endcomment %}
+                        <a href="{% url 'add_manager' %}" class="text-decoration-none">Add Manager</a>
+                    </li>
+                    {% if order %}
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-check"></i> {% endcomment %}
+                        <a href="{% url 'order_status' order_id=order.id %}" class="text-decoration-none">Order Status</a>
+                    </li>
+                    {% endif %}
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-cogs"></i> {% endcomment %}
+                        <a href="{% url 'admin_customization_list' %}" class="text-decoration-none">Admin Customization</a>
+                    </li>
+                    {% elif request.user.is_manager %}
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-list"></i> {% endcomment %}
+                        <a href="{% url 'product-list' %}" class="text-decoration-none">Products</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-truck"></i> {% endcomment %}
+                        <a href="{% url 'manager_custom_orders' %}" class="text-decoration-none">Customized Orders</a>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-exclamation-circle"></i> {% endcomment %}
+                        <a href="{% url 'add_complaint' %}" class="text-decoration-none">Add Complaint</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-clipboard"></i> {% endcomment %}
+                        <a href="{% url 'user_complaints' %}" class="text-decoration-none">My Complaints</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-box"></i> {% endcomment %}
+                        <a href="{% url 'order' %}" class="text-decoration-none">My Orders</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-cogs"></i> {% endcomment %}
+                        <a href="{% url 'corder' %}" class="text-decoration-none">Customized Orders</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-map-marker-alt"></i> {% endcomment %}
+                        <a href="{% url 'address' %}" class="text-decoration-none">My Address</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-tasks"></i> {% endcomment %}
+                        <a href="{% url 'customization_status' %}" class="text-decoration-none">My Status</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-tasks"></i> {% endcomment %}
+                        <a href="{% url 'change-password' %}" class="text-decoration-none">Change Password</a>
+                    </li>
+                    {% if order %}
+                    <li class="list-group-item">
+                        {% comment %} <i class="fa fa-check"></i> {% endcomment %}
+                        <a href="{% url 'order_status' order_id=order.id %}" class="text-decoration-none">Order Status</a>
+                    </li>
+                    {% endif %}
+                    {% endif %}
+                    
+
+                </ul>
+            </div>
+        </div>
+
+        <!-- Profile Details -->
+        <div class="col-md-9">
+            <div class="card-custom">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3>Personal Information</h3>
+                    <a href="{% url 'edit_profile' %}" class="primary-btn">Edit Profile</a>
+                </div>
+                <hr>
+
+                <div class="billing-details">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input readonly placeholder="{{ profile.name }}" class="input" type="text">
+                    </div>
+                    <div class="form-group mt-2">
+                        <label>Phone Number</label>
+                        <input readonly placeholder="{{ profile.phone_number }}" class="input" type="text">
+                    </div>
+                    <div class="form-group mt-2">
+                        <label>Email</label>
+                        <input readonly placeholder="{{ request.user.email }}" class="input" type="text">
+                    </div>
+                    <div class="form-group mt-2">
+                        <label>Address</label>
+                        <input readonly placeholder="{{ profile.address }}" class="input" type="text">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<br>
+<br>
+<br>
+{% endblock %}

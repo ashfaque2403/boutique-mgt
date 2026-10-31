@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Your Customizations</h2>
+    {% include "messages.html" %}
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover shadow-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Product</th>
+                    <th>Customization Status</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customization in customizations %}
+                <tr>
+                    <td class="align-middle">{{ customization.product.name }}</td>
+                    <td class="align-middle">
+                        <span class="badge 
+                            {% if customization.status == 'approved' %} badge-success 
+                            {% elif customization.status == 'pending' %} badge-warning 
+                            {% elif customization.status == 'rejected' %} badge-danger 
+                            {% else %} badge-secondary {% endif %}">
+                            {{ customization.status|title }}
+                        </span>
+                    </td>
+                    <td class="align-middle">${{ customization.total_price }}</td>
+                    <td class="align-middle">
+                        {% if customization.status == 'approved' and  customization.order %}
+                        <a href="{% url 'checkouted' order_id=customization.order.id customization_id=customization.id %}" 
+                           class="btn btn-primary btn-sm">
+                            <i class="fas fa-shopping-cart"></i> Proceed to Checkout
+                        </a>
+                    {% elif customization.status == 'paid' and customization.order %}
+                        <span class="btn btn-success btn-sm disabled">
+                            <i class="fas fa-check-circle"></i> Order Paid
+                        </span>
+                    {% elif customization.status == 'rejected' %}
+                        <span class="btn btn-danger btn-sm disabled">
+                            <i class="fas fa-times-circle"></i> Customization Rejected
+                        </span>
+                    {% endif %}
+                    
+                    
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- FontAwesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+{% endblock %}

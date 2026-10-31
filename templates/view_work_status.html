@@ -1,0 +1,16 @@
+<!-- view_work_status.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    {% include "messages.html" %}
+
+    <h2>Your Work Status</h2>
+    {% if work_status %}
+    <p>Status: {{ work_status.status }}</p>
+    <p>Last updated: {{ work_status.updated_at }}</p>
+    {% else %}
+    <p>No work status available.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Card for product update -->
+    <div class="card p-4 shadow-lg">
+        <!-- Title -->
+        <h2 class="text-center mb-4">Update Product</h2>
+
+        <!-- Product Update Form -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% include "messages.html" %}
+
+            <!-- Product Name -->
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" name="name" value="{{ product.name }}" class="form-control" required>
+            </div>
+
+            <!-- Product Description -->
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea name="description" class="form-control" required>{{ product.description }}</textarea>
+            </div>
+
+            <!-- Product Price -->
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" name="price" value="{{ product.price }}" class="form-control" required>
+            </div>
+
+            <!-- Product Discount -->
+            <div class="form-group">
+                <label for="discount">Discount:</label>
+                <input type="number" name="discount" value="{{ product.discount }}" class="form-control">
+            </div>
+
+            <!-- Stock Quantity -->
+            <div class="form-group">
+                <label for="stock_quantity">Stock Quantity:</label>
+                <input type="number" name="stock_quantity" value="{{ product.stock_quantity }}" class="form-control" required>
+            </div>
+
+            <!-- Category Selection -->
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <select name="category" class="form-control">
+                    <option value="">Select Category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if product.category.id == category.id %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Brand Selection -->
+        
+
+            <!-- Upload New Images -->
+            <div class="form-group">
+                <label for="images">Upload New Images:</label>
+                <input type="file" name="images" multiple class="form-control">
+            </div>
+
+            <!-- Update Button -->
+            <button type="submit" class="btn btn-primary mt-3">Update Product</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

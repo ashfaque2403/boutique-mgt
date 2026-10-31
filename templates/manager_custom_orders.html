@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class=" mt-4">
+    <h2 class="mb-4 text-center">Customization Orders</h2>
+    {% include "messages.html" %}
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Custom Text</th>
+                <th>Embroidery Pattern</th>
+                <th>Customization Price</th>
+                <th>Sizes</th>
+                <th>Status</th>
+                <th>Work Status</th>
+                <th>Change Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in custom_orders %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ order.user.first_name }} {{ order.user.last_name }}</td>
+                <td>{{ order.product.name }}</td>
+                <td>{{ order.custom_text|default:"N/A" }}</td>
+                <td>{{ order.embroidery_pattern|default:"N/A" }}</td>
+                <td>${{ order.customization_price }}</td>
+                <td>
+                    <strong>Length:</strong> {{ order.length }}<br>
+                    <strong>Waist Width:</strong> {{ order.waist_width }}<br>
+                    <strong>Sleeve Length:</strong> {{ order.sleeve_length }}<br>
+                    <strong>Sleeve Type:</strong> {{ order.sleeve_type }}<br>
+                    <strong>Shoulder Width:</strong> {{ order.shoulder_width }}<br>
+                    <strong>Color:</strong> {{ order.color }}<br>
+                    <strong>Color:</strong> {{ order.custom_color }}
+                </td>
+                
+                <td>
+                    {% if order.status == 'pending' %}
+                        <span class="badge bg-warning">Pending</span>
+                    {% elif order.status == 'approved' %}
+                        <span class="badge bg-primary">Approved</span>
+                    {% elif order.status == 'rejected' %}
+                        <span class="badge bg-danger">Rejected</span>
+                    {% elif order.status == 'paid' %}
+                        <span class="badge bg-success">Paid</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if order.work_status == '0%' %}
+                        <span class="badge bg-secondary">0% Completed</span>
+                    {% elif order.work_status == '25%' %}
+                        <span class="badge bg-secondary">25% Completed</span>
+                    {% elif order.work_status == '50%' %}
+                        <span class="badge bg-info">50% Completed</span>
+                    {% elif order.work_status == '75%' %}
+                        <span class="badge bg-primary">75% Completed</span>
+                    {% elif order.work_status == '100%' %}
+                        <span class="badge bg-success">100% Completed</span>
+                    {% endif %}
+                </td>
+                
+                <td>
+                    {% if order.status == "paid" %}
+                    {% if order.work_status == "100%" %}
+                        <span>Thank You!</span>
+                    {% else %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="customization_id" value="{{ order.id }}">
+                            
+                            <select name="work_status" class="selectpicker show-tick form-control" style="margin-right: 10px;">
+                                {% for status, status_display in order.WORK_STATUS_CHOICES %}
+                                    <option value="{{ status }}" {% if order.work_status == status %}selected{% endif %}>
+                                        {{ status_display }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                
+                            <button type="submit" class="primary-btn">Update</button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <span>Waiting for Admin's Response</span>
+                {% endif %}
+                
+                </td>
+                
+                
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" class="text-center">No customization orders found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

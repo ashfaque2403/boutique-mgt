@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">Order Status - Order ID: {{ order.id }}</h2>
+    {% include "messages.html" %}
+
+    <p><strong>Status:</strong> {{ order.status }}</p>
+
+    {% if user.is_superuser %}
+    <h4>Update Order Status</h4>
+    <form method="post">
+        {% csrf_token %}
+        <select name="status" class="form-select mb-3">
+            {% for status_code, status_label in status_choices %}
+                <option value="{{ status_code }}" {% if order.status == status_code %}selected{% endif %}>{{ status_label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-success">Update Status</button>
+    </form>
+    {% endif %}
+
+    <h3>Order Items</h3>
+    <ul class="list-group">
+        {% for item in order.items.all %}
+        <li class="list-group-item">
+            {{ item.product.name }} - {{ item.quantity }} x ${{ item.price }}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

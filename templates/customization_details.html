@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    {% include "messages.html" %}
+
+    <h2 class="mb-4">{{ customization.product.name }} Customization Details</h2>
+
+    <p><strong>Price:</strong> ${{ customization.customization_price }}</p>
+    <p><strong>Status:</strong> {{ customization.get_status_display }}</p>
+
+    {% if customization.approved %}
+    <!-- Ensure that both order.id and customization.id are being passed here -->
+    
+    <a href="{% url 'checkouted' order_id=order.id customization_id=customization.id %}" class="btn btn-primary">Proceed to Checkout</a>
+    {% else %}
+    <p>This customization is not approved yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

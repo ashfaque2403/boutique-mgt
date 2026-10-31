@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <!-- Card for Add Category Form -->
+    <div class="card">
+        <div class="card-header">
+            <h2>Add Fabric</h2>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="categoryName" class="form-label">Fabric Name:</label>
+                    <input type="text" name="name" id="categoryName" class="form-control" required>
+                </div>
+                <button type="submit" class="primary-btn mt-3">Add Fabric</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Card for Existing Categories -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4>Existing Categories</h4>
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                {% for category in fabric %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">{{ category.name }}
+                        <a href="{% url "remove_fab" category.id %}" class="text-danger">🗑️</a>
+
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">No categories added yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

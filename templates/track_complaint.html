@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="service-card">
+            <h2 class="service-header">Complaint Details</h2>
+            {% include "messages.html" %}
+
+            <div class="service-info">
+                <p><strong>Complaint by:</strong> {{ complaint.user.username }}</p>
+                <p><strong>Complaint Text:</strong> {{ complaint.complaint_text }}</p>
+                <p><strong>Status:</strong> <span class="badge {% if complaint.status == 'resolved' %}bg-success{% else %}bg-warning{% endif %}">{{ complaint.get_status_display }}</span></p>
+                <p><strong>Admin Response:</strong> {{ complaint.admin_response }}</p>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="status">Complaint Status</label>
+                    <select name="status" class="form-control">
+                        <option value="pending" {% if complaint.status == 'pending' %}selected{% endif %}>Pending</option>
+                        <option value="resolved" {% if complaint.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="admin_response">Admin Response</label>
+                    <textarea name="admin_response" class="form-control" rows="4">{{ complaint.admin_response }}</textarea>
+                </div>
+                <button type="submit" class="primary-btn">Update Complaint</button>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        /* Card Styling */
+        .service-card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            margin: 30px 0;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    
+        .service-header {
+            text-align: center;
+            color: black;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+    
+        .service-info p {
+            font-size: 16px;
+            color: #333;
+            margin: 5px 0;
+            padding: 8px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+    
+        .service-info strong {
+            color: #555;
+        }
+    
+        /* Form Styling */
+        .form-control, input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+    
+        input:focus, select:focus {
+            border-color: #D10024;
+            box-shadow: 0px 0px 5px rgba(209, 0, 36, 0.5);
+        }
+    
+        /* Button Styling */
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: #D10024;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+    
+        .btn-primary:hover {
+            background: #a6001a;
+        }
+    
+        /* Payment Badge */
+        .badge {
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+    
+        .bg-success {
+            background: #28a745;
+            color: white;
+        }
+    
+        .bg-warning {
+            background: #ffc107;
+            color: black;
+        }
+    
+        /* Table Styling */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+    
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+    
+        thead {
+            background: #D10024;
+            color: white;
+        }
+    
+        tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+    
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .service-card {
+                width: 90%;
+                padding: 20px;
+            }
+        }
+    </style>
+{% endblock %}

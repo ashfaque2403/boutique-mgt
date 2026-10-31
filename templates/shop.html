@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- Shop Section Begin -->
+<section class="shop spad">
+
+    <div class="container">
+        {% include "messages.html" %}
+
+        <div class="row">
+
+            <div class="col-lg-3">
+                <div class="shop__sidebar">
+                    <div class="shop__sidebar__search">
+                        <form action="{% url "shop" %}">
+                            <input type="text" name="search" placeholder="Search...">
+                            <button type="submit"><span class="icon_search"></span></button>
+                        </form>
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="shop__sidebar__accordion">
+                        <form method="GET">
+                            <div class="accordion" id="accordionExample">
+                                <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseCategories">Categories</a>
+                                    </div>
+                                    <div id="collapseCategories" class="collapse show" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__brand">
+                                                <ul>
+                                                    {% for category in category_obj %}
+                                                        <li><input type="checkbox" name="category" value="{{ category.name }}" id="category-{{ category.id }}">
+                                                            <label for="category-{{ category.id }}">{{ category.name }}</label></li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
+
+                                <!-- Price Filter -->
+                                <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapsePrice">Filter Price</a>
+                                    </div>
+                                    <div id="collapsePrice" class="collapse show" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__price">
+                                                <input type="range" id="min-price" name="min_price" min="0" max="5000" step="100" value="0" oninput="updatePriceRange()">
+									            <input type="range" id="max-price" name="max_price" min="0" max="500000" step="100" value="900000" oninput="updatePriceRange()">
+                                                <div class="price-range-display">
+                                                    <span id="min-price-display">₹0</span> - <span id="max-price-display">₹500000</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                                    function updatePriceRange() {
+                                        let minPrice = document.getElementById("min-price").value;
+                                        let maxPrice = document.getElementById("max-price").value;
+                                
+                                        if (parseInt(minPrice) > parseInt(maxPrice)) {
+                                            let temp = minPrice;
+                                            minPrice = maxPrice;
+                                            maxPrice = temp;
+                                        }
+                                
+                                        document.getElementById("min-price-display").innerText = "₹" + minPrice;
+                                        document.getElementById("max-price-display").innerText = "₹" + maxPrice;
+                                    }
+                                </script>
+
+                            </div>
+                            <button type="submit" class="primary-btn">Filter</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <div class="col-lg-9">
+                
+
+                <!-- Product Listing -->
+                <div class="row">
+                    {% for product in product %}
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="product__item">
+                                {% with product.images.first as product_image %}
+                                <div class="product__item__pic set-bg" data-setbg="{% if product_image %}{{ product_image.image.url }}{% else %}path/to/default-image.jpg{% endif %}">
+                                    <a href="{% url 'product-page' product.id %}" class="stretched-link d-block w-100 h-100"></a>
+                                {% endwith %}
+                                {% if product.stock_quantity > 0 %}
+                                <span class="label">In Stock</span>
+                                {% else %}
+                                <span class="label bg-danger">Out of Stock</span>
+                                {% endif %}
+                                    <ul class="product__hover">
+                                        <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
+                                        <li><a href="#"><img src="img/icon/compare.png" alt=""> <span>Compare</span></a></li>
+                                        <li><a href="#"><img src="img/icon/search.png" alt=""></a></li>
+                                    </ul>
+                                </div>
+                                <div class="product__item__text">
+                                    <h6>{{ product.name }}</h6>
+                                    {% if product.stock_quantity > 0 %}
+                                    {% if not request.user.is_superuser and not request.user.is_manager %}
+                                    <a href="{% url "product-page" product.id %}" class="add-cart">+ Add To Cart</a>
+                                    {% endif %}
+                                    {% else %}
+                                    <span class="label text-danger">Out of Stock</span>
+                                    {% endif %}
+                                    <div class="rating">
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                    </div>
+                                    <h5>₹{{ product.price }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="product__pagination">
+                            {% for i in products.paginator.page_range %}
+                                <a href="?page={{ i }}" class="{% if products.number == i %}active{% endif %}">{{ i }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Shop Section End -->
+
+{% endblock content %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+		<!-- NEWSLETTER -->
+		<div id="newsletter" class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<div class="col-md-8">
+						<div class="contact__form">
+							<p>Create Your Account <strong>Boutique</strong> </p>
+							<form method="POST">
+								{% csrf_token %}
+								{% include "messages.html" %}
+
+								<input name="firstname" class="input" type="text" placeholder="First Name">
+                                <br>
+                                <br><input name="lastname" class="input" type="text" placeholder="Last Name">
+                                <br>
+                                <br><input name="email" class="input" type="email" placeholder="Email">
+                                <br>
+                                <br>
+								<input name="username" class="input" type="text" placeholder="Username">
+                                <br>
+                                <br>
+								<input name="password" class="input" type="password" placeholder="Password">
+                                <br>
+                                <br>
+								<button class="primary-btn order-submit"><i class="fa fa-user-plus"></i> Register</button>
+							</form>
+
+                            <div class="text-center mt-3">
+                                <p>Don't have an account? <a href="{% url 'login' %}" class="text-primary">Sign in</a></p>
+                            </div>
+						
+						</div>
+					</div>
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /NEWSLETTER -->
+
+
+{% endblock content %}

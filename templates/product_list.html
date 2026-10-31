@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Product List</h2>
+    {% include "messages.html" %}
+
+    <a href="{% url 'add_product' %}" class="primary-btn mb-3">Add Product</a>
+
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Brand</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Low Stock</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>
+                    {% with product.images.first as product_image %}
+                        {% if product_image %}
+                            <img src="{{ product_image.image.url }}" alt="{{ product.name }}" width="50">
+                        {% else %}
+                            <img src="path/to/default-image.jpg" alt="No Image" width="50">
+                        {% endif %}
+                    {% endwith %}
+                </td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.category.name }}</td>
+                <td>{{ product.brand.name }}</td>
+                <td>${{ product.price }}</td>
+                <td>{{ product.stock_quantity }}</td>
+
+                <!-- Low Stock Logic -->
+                <td>
+                    {% if product.stock_quantity <= 2 %}
+                        <div class="alert alert-warning" id="low-stock-warning-{{ product.id }}" style="display: block;">
+                            <strong>Warning!</strong> Product "{{ product.name }}" is running out of stock.
+                        </div>
+                        {% if request.user.is_manager %}
+                            <button class="btn btn-info btn-sm" onclick="notifyLowStock({{ product.id }})" id="notify-button-{{ product.id }}">
+                                Notify Admin
+                            </button>
+                        {% endif %}
+                    {% else %}
+                        <span class="text-success">In Stock</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if not request.user.is_deliveryboy %}
+                        <a href="{% url 'update-product' product.id %}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{% url 'delete-product' product.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    {% endif %}
+                </td>
+                
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="text-center">No products available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- JavaScript to show/hide notification icon -->
+<script>
+    function notifyLowStock(productId) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;  // Get CSRF token
+    
+        // Create AJAX request to update the stock status
+        fetch("{% url 'update-stock-status' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({ 'product_id': productId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                alert(data.message);  // Show success message
+    
+                // Hide the "Notify Admin" button and show the message
+                document.getElementById("low-stock-warning-" + productId).style.display = "block";
+                document.getElementById("notify-button-" + productId).style.display = "none";  // Hide the button
+            } else {
+                alert(data.message);  // Show error message
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    }
+</script>
+{% endblock %}

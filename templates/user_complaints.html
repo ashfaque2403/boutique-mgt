@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Card for complaints display -->
+    <div class="card p-4 shadow-lg">
+        <!-- Title -->
+        <h2 class="text-center mb-4">Your Complaints</h2>
+        {% include "messages.html" %}
+
+        <!-- Table for displaying complaints -->
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Subject</th>
+                    <th>Status</th>
+                    <th>Admin Response</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for complaint in complaints %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ complaint.subject }}</td>
+                        <td>
+                            <!-- Displaying status with Bootstrap badge colors -->
+                            <span class="badge 
+                                {% if complaint.status == 'Processing' %}badge-warning{% endif %}
+                                {% if complaint.status == 'Resolved' %}badge-success{% endif %}
+                                {% if complaint.status == 'Pending' %}badge-secondary{% endif %}
+                            ">
+                                {{ complaint.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ complaint.admin_response|default:"No response yet" }}</td>
+                        <td>{{ complaint.created_at }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

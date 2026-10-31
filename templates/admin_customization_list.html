@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Admin Customization List</h2>
+    {% include "messages.html" %}
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Product</th>
+                    <th>User</th>
+                    <th>Status</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customization in customizations %}
+                <tr>
+                    <td>{{ customization.product.name }}</td>
+                    <td>{{ customization.user.username }}</td>
+                    <td>
+                        <span class="badge 
+                            {% if customization.status == 'pending' %}badge-warning
+                            {% elif customization.status == 'approved' %}badge-success
+                            {% else %}badge-danger{% endif %}">
+                            {{ customization.status|title }}
+                        </span>
+                    </td>
+                    <td>&#8377;{{ customization.customization_price }}</td>
+                    <td>
+                        {% if customization.status == 'pending' %}
+                            <a href="{% url 'approve_customization' customization.id %}" class="btn btn-sm btn-success">Approve</a>
+                            <a href="{% url 'reject_customization' customization.id %}" class="btn btn-sm btn-danger">Reject</a>
+                        {% else %}
+                            <span class="text-muted">No actions</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No customizations found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

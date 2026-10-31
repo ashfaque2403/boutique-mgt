@@ -1,0 +1,22 @@
+<!-- update_work_status.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Update Work Status</h2>
+    {% include "messages.html" %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select name="status" class="form-control" id="status">
+                <option value="Pending" {% if work_status.status == 'Pending' %}selected{% endif %}>Pending</option>
+                <option value="In Progress" {% if work_status.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                <option value="Completed" {% if work_status.status == 'Completed' %}selected{% endif %}>Completed</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Update Status</button>
+    </form>
+</div>
+{% endblock %}

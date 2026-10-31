@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Submit Your Customization</h2>
+
+    <div class="card shadow p-4">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% include "messages.html" %}
+
+            <!-- Custom Text Input -->
+            <div class="form-group">
+                <label for="customText" class="font-weight-bold">Custom Text:</label>
+                <input type="text" name="custom_text" id="customText" class="form-control" placeholder="Enter custom text" required>
+            </div>
+
+            <!-- Embroidery Pattern Input -->
+            <div class="form-group">
+                <label for="embroideryPattern" class="font-weight-bold">Embroidery Pattern:</label>
+                <input type="text" name="embroidery_pattern" id="embroideryPattern" class="form-control" placeholder="Enter pattern (optional)">
+            </div>
+
+            <!-- Color Selection -->
+            <div class="form-group">
+                <label for="colorSelect" class="font-weight-bold">Color:</label>
+                <select name="color" id="colorSelect" class="form-control" onchange="toggleCustomColor(this)">
+                    <option value="black">Black</option>
+                    <option value="white">White</option>
+                    <option value="red">Red</option>
+                    <option value="blue">Blue</option>
+                    <option value="green">Green</option>
+                    <option value="custom">Custom Color</option>
+                </select>
+            </div>
+
+            <!-- Custom Color Input -->
+            <div class="form-group" id="customColorField" style="display:none;">
+                <label for="customColor" class="font-weight-bold">Enter Custom Color:</label>
+                <input type="text" name="custom_color" id="customColor" class="form-control" placeholder="e.g. Navy Blue">
+            </div>
+
+            <!-- Shoulder Width -->
+            <div class="form-group">
+                <label for="shoulderWidth" class="font-weight-bold">Shoulder Width (cm):</label>
+                <input type="number" step="0.01" name="shoulder_width" id="shoulderWidth" class="form-control">
+            </div>
+
+            <!-- Sleeve Type -->
+            <div class="form-group">
+                <label for="sleeveType" class="font-weight-bold">Sleeve Type:</label>
+                <select name="sleeve_type" id="sleeveType" class="form-control">
+                    <option value="short">Short Sleeve</option>
+                    <option value="long">Long Sleeve</option>
+                    <option value="3/4">3/4 Sleeve</option>
+                    <option value="sleeveless">Sleeveless</option>
+                </select>
+            </div>
+
+            <!-- Sleeve Length -->
+            <div class="form-group">
+                <label for="sleeveLength" class="font-weight-bold">Sleeve Length (cm):</label>
+                <input type="number" step="0.01" name="sleeve_length" id="sleeveLength" class="form-control">
+            </div>
+
+            <!-- Waist Width -->
+            <div class="form-group">
+                <label for="waistWidth" class="font-weight-bold">Waist Width (cm):</label>
+                <input type="number" step="0.01" name="waist_width" id="waistWidth" class="form-control">
+            </div>
+
+            <!-- Length -->
+            <div class="form-group">
+                <label for="length" class="font-weight-bold">Length (cm):</label>
+                <input type="number" step="0.01" name="length" id="length" class="form-control">
+            </div>
+
+            <!-- File Upload Input -->
+            <div class="form-group">
+                <label for="imageUpload" class="font-weight-bold">Upload Image:</label>
+                <input type="file" name="image" id="imageUpload" class="form-control-file">
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="primary-btn">
+                    <i class="fas fa-upload"></i> Submit Customization
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleCustomColor(select) {
+        const customColorField = document.getElementById('customColorField');
+        if (select.value === 'custom') {
+            customColorField.style.display = 'block';
+        } else {
+            customColorField.style.display = 'none';
+        }
+    }
+</script>
+
+<!-- FontAwesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+{% endblock %}
